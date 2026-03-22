@@ -1,0 +1,130 @@
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+data()
+```
+
+```{r}
+d=esoph
+View(d)
+#This is the summary of the whole dataset
+summary(d)
+```
+
+```{r}
+group=group_by(d)
+summarise(group,freq=n())
+#this explains the summary of the each columns
+lapply(d,summary)
+```
+
+```{r}
+#Getting the no of cases by alcohol consumption with amounts
+a=d %>% group_by(agegp,alcgp) %>% 
+   summarise(No_of_cases_by_alcohol_consumption=sum(ncases))
+print(a)
+```
+
+```{r}
+#Getting the no of cases by tobacco consumption
+tb= d %>% group_by(agegp,tobgp) %>% 
+      summarise(No_of_cases_by_tobacco_consumption=sum(ncases))
+print(tb)
+```
+
+```{r}
+#Top 5 alcohol-holics
+alc = arrange(d,desc(alcgp))
+head(alc,5)
+```
+
+```{r}
+#Top 5 smokers
+tbs= arrange(d,desc(tobgp))
+head(tbs,5)
+```
+
+```{r}
+#Total Smokers
+g=group_by(d,tobgp)
+s=summarise(g,freq=n())
+print(s)
+```
+
+```{r}
+#Total Alcoholics
+gs=group_by(d,alcgp)
+summarise(gs,freq=n())
+
+```
+
+```{r}
+#No of cases  according to age gap
+ggplot(data=d) + geom_bar(mapping=aes(x=agegp,y=ncases,fill=agegp),stat="identity")
+```
+
+```{r}
+d$tobgp=as.factor(d$tobgp)
+summary(d)
+```
+
+```{r}
+ggplot(data = d) + geom_bar( mapping = aes(x = agegp,fill=tobgp,stat="identity"), position = "fill"
+)
+```
+
+```{r}
+ggplot(data = d) + geom_bar( mapping = aes(x = agegp,fill=alcgp), position = "fill"
+)
+```
+
+```{r}
+#People who arent affected by consumption of tobacco and alcohol
+ggplot(data=d) + geom_bar(mapping=aes(x=agegp,y=ncontrols),stat="identity")
+```
+
+```{r}
+#Making a visualization on the no of tobacco cases
+ggplot(data = d) + geom_point(mapping = aes(x = agegp, y = ncases,color="red")) +
+facet_wrap(~ tobgp, nrow = 2)
+```
+
+```{r}
+#Making a visualization of types of alcohol cases
+ggplot(data = d) + geom_point(mapping = aes(x = agegp, y = ncases,color="red")) +
+facet_wrap(~ alcgp, nrow = 2)
+```
+
+```{r}
+#Making a visualization on the no of no-cases of tobaco
+ggplot(data = d) + geom_point(mapping = aes(x = agegp, y = ncontrols),color="blue") +
+facet_wrap(~ tobgp, nrow = 2)
+```
+
+```{r}
+#Making the visualization on the no of no-cases of alcohols
+ggplot(data = d) + geom_point(mapping = aes(x = agegp, y = ncontrols),color="blue") +
+facet_wrap(~ alcgp, nrow = 2)
+```
+
+```{r}
+bar <- ggplot(data = d) +
+  geom_bar( mapping = aes(x = ncases, fill = alcgp), show.legend = TRUE, width = 1
+) +
+theme(aspect.ratio = 1) + labs(x ='Alcohol_Consumption', y = 'Cases')
+bar + coord_flip()
+bar + coord_polar()
+```
+
+```{r}
+bar <- ggplot(data = d) +
+  geom_bar( mapping = aes(x = ncases, fill = tobgp), show.legend = TRUE, width = 1
+) +
+theme(aspect.ratio = 1) + labs(x ='Tobacco_Consumption', y = 'Cases')
+bar + coord_flip()
+bar + coord_polar()
+```
